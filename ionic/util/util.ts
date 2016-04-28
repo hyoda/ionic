@@ -104,6 +104,7 @@ export const isBoolean = val => typeof val === 'boolean';
 export const isString = val => typeof val === 'string';
 export const isNumber = val => typeof val === 'number';
 export const isFunction = val => typeof val === 'function';
+export const isDate = val => !!val && typeof val.getTime === 'function';
 export const isDefined = val => typeof val !== 'undefined';
 export const isUndefined = val => typeof val === 'undefined';
 export const isPresent = val => val !== undefined && val !== null;
@@ -138,6 +139,73 @@ export const isCheckedProperty = function(a: any, b: any): boolean {
   return (a == b);
   /* tslint:enable */
 };
+
+const ISO_8601_REGEXP = /^(\d{4}|[+\-]\d{6})(?:-(\d{2})(?:-(\d{2}))?)?(?:T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{3}))?)?(?:(Z)|([+\-])(\d{2})(?::(\d{2}))?)?)?$/;
+
+export function parseDate(val: any): DateParse {
+  // manually parse IS0 cuz Date.parse cannot be trusted
+  // ISO 8601 format: 1994-12-15T13:47:20Z
+
+  if (isDate(val)) {
+    return {
+      isValid: true,
+      year: val.getYear(),
+      month: val.getMonth() + 1,
+      date: val.getDate(),
+      hour: val.getHours(),
+      min: val.getMinutes(),
+      sec: val.getSections(),
+      ms: val.getMilliseconds(),
+      tzOffset: 0,
+    }
+  }
+
+  var parse: any[] = ISO_8601_REGEXP.exec(val);
+
+  if (isBlank(parse)) {
+    parse = [null];
+  }
+
+  // ensure all values exist with at least null
+  for (var i = 1; i < 8; i++) {
+    parse[i] = (parse[i] !== undefined ? parseInt(parse[i], 10) : 0);
+  }
+
+  var tzOffset: number = 0;
+  if (isPresent(parse[9]) && isPresent(parse[10])) {
+    tzOffset += parseInt(parse[10], 10) * 60;
+    if (isPresent(parse[11])) {
+      tzOffset += parseInt(parse[11], 10);
+    }
+    if (parse[9] === '-') {
+      tzOffset *= -1;
+    }
+  }
+
+  return {
+    isValid: (parse[0] !== null),
+    year: parse[1] === 0 ? 1970 : parse[1],
+    month: parse[2] === 0 ? 1 : parse[2],
+    date: parse[3] === 0 ? 1 : parse[3],
+    hour: parse[4],
+    min: parse[5],
+    sec: parse[6],
+    ms: parse[7],
+    tzOffset: tzOffset,
+  }
+}
+
+export interface DateParse {
+  isValid: boolean;
+  year: number;
+  month: number;
+  date: number;
+  hour: number;
+  min: number;
+  sec: number;
+  ms: number;
+  tzOffset: number;
+}
 
 /**
  * Convert a string in the format thisIsAString to a slug format this-is-a-string

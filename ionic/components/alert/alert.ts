@@ -1,5 +1,5 @@
-import {Component, ElementRef, Renderer, HostListener, ChangeDetectionStrategy, ViewEncapsulation} from 'angular2/core';
-import {NgClass, NgSwitch, NgIf, NgFor} from 'angular2/common';
+import {Component, ElementRef, Renderer, HostListener, ChangeDetectionStrategy, ViewEncapsulation} from '@angular/core';
+import {NgClass, NgSwitch, NgIf, NgFor} from '@angular/common';
 
 import {Animation} from '../../animations/animation';
 import {Transition, TransitionOptions} from '../../transitions/transition';

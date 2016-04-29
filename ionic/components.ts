@@ -26,7 +26,7 @@ export * from './components/nav/nav-controller';
 export * from './components/nav/view-controller';
 export * from './components/nav/nav-params';
 export * from './components/nav/nav-push';
-export * from './components/nav/nav-router';
+//export * from './components/nav/nav-router';
 export * from './components/navbar/navbar';
 export * from './components/option/option';
 export * from './components/picker/picker';

@@ -1,5 +1,4 @@
-import {forwardRef, Type} from 'angular2/core';
-import {CORE_DIRECTIVES, FORM_DIRECTIVES} from 'angular2/common';
+import {CORE_DIRECTIVES, FORM_DIRECTIVES} from '@angular/common';
 
 import {Menu} from '../components/menu/menu';
 import {MenuToggle} from '../components/menu/menu-toggle';
@@ -36,109 +35,10 @@ import {RadioGroup} from '../components/radio/radio-group';
 import {Searchbar, SearchbarInput} from '../components/searchbar/searchbar';
 import {Nav} from '../components/nav/nav';
 import {NavPush, NavPop} from '../components/nav/nav-push';
-import {NavRouter} from '../components/nav/nav-router';
+//import {NavRouter} from '../components/nav/nav-router';
 import {NavbarTemplate, Navbar} from '../components/navbar/navbar';
 import {ShowWhen, HideWhen} from '../components/show-hide-when/show-hide-when';
 
-/**
- * @name IONIC_DIRECTIVES
- * @description
- * The core Ionic directives as well as Angular's `CORE_DIRECTIVES` and `FORM_DIRECTIVES` are
- * avaialbe automatically when you bootstrap your app with the `@App` decorator. This means
- * if you are using custom components you no longer need to import `IONIC_DIRECTIVES` as they
- * are part of the `@App`s default directives.
- *
- * If you would like to **not** have them included by default, you would need to bootstrap
- * the app differently.
- *
- * Instead of starting your app like so:
- *
- * ```typescript
- * @App({
- *  template: "<ion-nav></ion-nav>"
- * })
- *
- * export class MyApp{
- *
- * }
- * ```
- *
- * We would use Angulars default way of bootstrap an app, import `IONIC_DIRECTIVES` and `ionicProviders`, then
- * declare `ionicProviders` as a dependencey.
- *
- * ```typescript
- *  import {IONIC_DIRECTIVES, ionicProviders} from 'ionic-angular';
- *  import {bootstrap} from 'angular2/platform/browser';
- *
- *  @Component({
- *      //default selector, and theme.
- *      directives: [IONIC_DIRECTIVES]
- *  })
- *  class App {}
- *
- *  bootstrap(App,ionicProviders())
- * ```
- *
- *
- *
- * #### Angular
- * - CORE_DIRECTIVES
- * - FORM_DIRECTIVES
- *
- * #### Ionic
- * - Menu
- * - MenuToggle
- * - MenuClose
- * - Badge
- * - Button
- * - Content
- * - Scroll
- * - InfiniteScroll
- * - InfiniteScrollContent
- * - Refresher
- * - RefresherContent
- * - Img
- * - List
- * - ListHeader
- * - Item
- * - ItemSliding
- * - VirtualScroll
- * - VirtualItem
- * - VirtualHeader
- * - VirtualFooter
- * - Slides
- * - Slide
- * - SlideLazy
- * - Tabs
- * - Tab
- * - Toolbar
- * - ToolbarTitle
- * - ToolbarItem
- * - Icon
- * - Spinner
- * - Searchbar
- * - SearchbarInput
- * - Segment
- * - SegmentButton
- * - Checkbox
- * - RadioGroup
- * - RadioButton
- * - Select
- * - Option
- * - Toggle
- * - TextArea
- * - TextInput
- * - Label
- * - Nav
- * - NavbarTemplate
- * - Navbar
- * - NavPush
- * - NavPop
- * - NavRouter
- * - IdRef
- * - ShowWhen
- * - HideWhen
- */
 export const IONIC_DIRECTIVES = [
   // Angular
   CORE_DIRECTIVES,
@@ -209,7 +109,7 @@ export const IONIC_DIRECTIVES = [
 
   NavPush,
   NavPop,
-  NavRouter,
+  //NavRouter,
 
   ShowWhen,
   HideWhen

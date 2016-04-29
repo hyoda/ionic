@@ -1,4 +1,4 @@
-import {Directive, TemplateRef, ViewContainerRef} from 'angular2/core';
+import {Directive, TemplateRef, ViewContainerRef} from '@angular/core';
 
 
 /**

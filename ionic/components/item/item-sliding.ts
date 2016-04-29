@@ -1,4 +1,4 @@
-import {Component, ElementRef, Optional, ChangeDetectionStrategy, ViewEncapsulation} from 'angular2/core';
+import {Component, ElementRef, Optional, ChangeDetectionStrategy, ViewEncapsulation} from '@angular/core';
 
 import {List} from '../list/list';
 

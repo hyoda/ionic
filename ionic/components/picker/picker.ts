@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, ViewChild, Renderer, HostListener, ViewEncapsulation} from 'angular2/core';
+import {Component, ElementRef, Input, ViewChild, Renderer, HostListener, ViewEncapsulation} from '@angular/core';
 
 import {Animation} from '../../animations/animation';
 import {Transition, TransitionOptions} from '../../transitions/transition';

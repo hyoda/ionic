@@ -1,5 +1,5 @@
-import {Component, ElementRef, Renderer, Output, EventEmitter} from 'angular2/core';
-import {NgClass, NgIf, NgFor} from 'angular2/common';
+import {Component, ElementRef, Renderer, Output, EventEmitter} from '@angular/core';
+import {NgClass, NgIf, NgFor} from '@angular/common';
 
 import {Button} from '../button/button';
 import {Icon} from '../icon/icon';

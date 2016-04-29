@@ -1,5 +1,5 @@
-import {ElementRef, Component, Directive, Host, HostBinding, HostListener, ViewChild, Input, Output, EventEmitter, Optional, ViewEncapsulation} from 'angular2/core';
-import {NgIf, NgClass, NgControl, FORM_DIRECTIVES} from 'angular2/common';
+import {ElementRef, Component, Directive, Host, HostBinding, HostListener, ViewChild, Input, Output, EventEmitter, Optional, ViewEncapsulation} from '@angular/core';
+import {NgIf, NgClass, NgControl, FORM_DIRECTIVES} from '@angular/common';
 
 import {Ion} from '../ion';
 import {Config} from '../../config/config';

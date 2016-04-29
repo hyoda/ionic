@@ -1,5 +1,5 @@
-import {Component, Directive, ElementRef, Optional, Host, forwardRef, ViewContainerRef, ViewChild, ViewChildren, EventEmitter, Output, Input, Renderer, Type, ViewEncapsulation} from 'angular2/core';
-import {NgFor, NgIf} from 'angular2/common';
+import {Component, Directive, ElementRef, Optional, Host, forwardRef, ViewContainerRef, ViewChild, ViewChildren, EventEmitter, Output, Input, Renderer, Type, ViewEncapsulation} from '@angular/core';
+import {NgFor, NgIf} from '@angular/common';
 
 import {IonicApp} from '../app/app';
 import {Config} from '../../config/config';

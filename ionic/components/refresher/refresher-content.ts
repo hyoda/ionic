@@ -1,5 +1,5 @@
-import {Component, Input, ChangeDetectionStrategy, ViewEncapsulation} from 'angular2/core';
-import {NgIf} from 'angular2/common';
+import {Component, Input, ChangeDetectionStrategy, ViewEncapsulation} from '@angular/core';
+import {NgIf} from '@angular/common';
 
 import {Config} from '../../config/config';
 import {Icon} from '../icon/icon';

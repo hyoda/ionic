@@ -1,5 +1,5 @@
-import {Directive, ElementRef, EventEmitter, Host, Input, Output, NgZone} from 'angular2/core';
-import {NgIf, NgClass} from 'angular2/common';
+import {Directive, ElementRef, EventEmitter, Host, Input, Output, NgZone} from '@angular/core';
+import {NgIf, NgClass} from '@angular/common';
 
 import {Content} from '../content/content';
 import {Icon} from '../icon/icon';

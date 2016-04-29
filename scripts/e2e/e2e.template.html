@@ -42,12 +42,27 @@
   <script>
     System.config({
       map: {
-        'angular2': '/angular2'
+        '@angular': '/node_modules/@angular'
       },
       packages: {
         'ionic-angular': {
           main: 'index'
-        }
+        },
+        '@angular/core': {
+          main: 'index'
+        },
+        '@angular/compiler': {
+          main: 'index'
+        },
+        '@angular/common': {
+          main: 'index'
+        },
+        '@angular/platform-browser': {
+          main: 'index'
+        },
+        '@angular/platform-browser-dynamic': {
+          main: 'index'
+        },
       }
     });
   </script>

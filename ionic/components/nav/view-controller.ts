@@ -1,4 +1,4 @@
-import {Output, EventEmitter, Type, TemplateRef, ViewContainerRef, ElementRef, Renderer, ChangeDetectorRef} from 'angular2/core';
+import {Output, EventEmitter, Type, TemplateRef, ViewContainerRef, ElementRef, Renderer, ChangeDetectorRef} from '@angular/core';
 
 import {Navbar} from '../navbar/navbar';
 import {NavController, NavOptions} from './nav-controller';

@@ -1,5 +1,5 @@
 import {App} from 'ionic-angular';
-import {Control, ControlGroup} from 'angular2/common';
+import {Control, ControlGroup} from '@angular/common';
 
 
 @App({

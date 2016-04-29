@@ -1,7 +1,7 @@
-import {provide, Provider, ComponentRef, NgZone} from 'angular2/core';
-import {ROUTER_PROVIDERS} from 'angular2/router';
-import {LocationStrategy, HashLocationStrategy} from 'angular2/platform/common';
-import {HTTP_PROVIDERS} from 'angular2/http';
+import {provide, Provider, ComponentRef, NgZone} from '@angular/core';
+//import {ROUTER_PROVIDERS} from '@angular/router';
+//import {LocationStrategy, HashLocationStrategy} from '@angular/platform/common';
+//import {HTTP_PROVIDERS} from '@angular/http';
 
 import {ClickBlock} from '../util/click-block';
 import {Config} from './config';
@@ -58,9 +58,9 @@ export function ionicProviders(args: any = {}) {
     Keyboard,
     MenuController,
     Translate,
-    ROUTER_PROVIDERS,
-    provide(LocationStrategy, {useClass: HashLocationStrategy}),
-    HTTP_PROVIDERS,
+    // ROUTER_PROVIDERS,
+    // provide(LocationStrategy, {useClass: HashLocationStrategy}),
+    // HTTP_PROVIDERS,
   ];
 }
 

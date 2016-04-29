@@ -1,5 +1,5 @@
-import {RouteConfig,} from 'angular2/router';
-import {Location} from 'angular2/platform/common';
+import {RouteConfig,} from '@angular/router';
+import {Location} from '@angular/platform/common';
 
 import {App, Page, NavParams, ViewController} from 'ionic-angular';
 

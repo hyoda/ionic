@@ -1,5 +1,5 @@
-import {Component, Optional, ElementRef, ViewChild, ViewEncapsulation} from 'angular2/core';
-import {NgIf, NgControl} from 'angular2/common';
+import {Component, Optional, ElementRef, ViewChild, ViewEncapsulation} from '@angular/core';
+import {NgIf, NgControl} from '@angular/common';
 
 import {Button} from '../button/button';
 import {Config} from '../../config/config';

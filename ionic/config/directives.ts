@@ -39,7 +39,6 @@ import {Nav} from '../components/nav/nav';
 import {NavPush, NavPop} from '../components/nav/nav-push';
 import {NavRouter} from '../components/nav/nav-router';
 import {NavbarTemplate, Navbar} from '../components/navbar/navbar';
-import {IdRef} from '../components/app/id';
 import {ShowWhen, HideWhen} from '../components/show-hide-when/show-hide-when';
 
 /**
@@ -214,7 +213,6 @@ export const IONIC_DIRECTIVES = [
   NavPush,
   NavPop,
   NavRouter,
-  IdRef,
 
   ShowWhen,
   HideWhen

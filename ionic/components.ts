@@ -1,5 +1,4 @@
 export * from './components/app/app';
-export * from './components/app/id';
 export * from './components/action-sheet/action-sheet';
 export * from './components/alert/alert';
 export * from './components/badge/badge';
@@ -46,6 +45,7 @@ export * from './components/spinner/spinner';
 export * from './components/tabs/tabs';
 export * from './components/tabs/tab';
 export * from './components/tap-click/tap-click';
+export * from './components/toast/toast';
 export * from './components/toggle/toggle';
 export * from './components/toolbar/toolbar';
 export * from './components/virtual-scroll/virtual-scroll';

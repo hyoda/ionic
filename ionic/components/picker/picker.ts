@@ -123,8 +123,7 @@ class PickerColumnCmp {
     this.optHeight = (colEle.firstElementChild ? colEle.firstElementChild.clientHeight : 0);
 
     // set the scroll position for the selected option
-    let selectedIndex = this.col.options.indexOf(this.col.selected);
-    this.setSelected(selectedIndex, 0);
+    this.setSelected(this.col.selectedIndex, 0);
   }
 
   pointerStart(ev) {
@@ -314,9 +313,10 @@ class PickerColumnCmp {
     // ensure we've got a good round number :)
     y = Math.round(y);
 
-    let selectedIndex = Math.abs(Math.round(y / this.optHeight));
-
-    this.col.selected = this.col.options[selectedIndex];
+    this.col.selectedIndex = Math.abs(Math.round(y / this.optHeight));
+    if (this.col.selectedIndex < 0) {
+      this.col.selectedIndex = 0;
+    }
 
     let colEle: HTMLElement = this.colEle.nativeElement;
     let optElements: any = colEle.querySelectorAll('.picker-opt');
@@ -332,7 +332,7 @@ class PickerColumnCmp {
       var translateZ = 0;
 
       if (this.rotateFactor !== 0) {
-        translateX = 10;
+        translateX = 0;
         translateZ = 90;
         if (rotateX > 90 || rotateX < -90) {
           translateX = -9999;
@@ -347,7 +347,7 @@ class PickerColumnCmp {
 
       optEle.style[CSS.transitionDuration] = (duration > 0 ? duration + 'ms' : '');
 
-      optEle.classList[i === selectedIndex ? 'add' : 'remove']('picker-opt-selected');
+      optEle.classList[i === this.col.selectedIndex ? 'add' : 'remove']('picker-opt-selected');
 
     }
 
@@ -518,7 +518,7 @@ class PickerDisplayCmp {
     if (button.handler) {
       // a handler has been provided, execute it
       // pass the handler the values from the inputs
-      if (button.handler(this.getValues()) === false) {
+      if (button.handler(this.getSelected()) === false) {
         // if the return value of the handler is false then do not dismiss
         shouldDismiss = false;
       }
@@ -538,17 +538,20 @@ class PickerDisplayCmp {
   }
 
   dismiss(role): Promise<any> {
-    return this._viewCtrl.dismiss(this.getValues(), role);
+    return this._viewCtrl.dismiss(this.getSelected(), role);
   }
 
-  getValues() {
-    // this is an alert with text inputs
-    // return an object of all the values with the input name as the key
-    let values = {};
-    this.d.columns.forEach(col => {
-      values[col.name] = col.selected ? col.selected.value : null;
+  getSelected(): any {
+    let selected = {};
+    this.d.columns.forEach((col, index) => {
+      let selectedColumn = col.options[col.selectedIndex];
+      selected[col.name] = {
+        text: selectedColumn ? selectedColumn.text : null,
+        value: selectedColumn ? selectedColumn.value : null,
+        columnIndex: index,
+      };
     });
-    return values;
+    return selected;
   }
 
   isEnabled() {
@@ -566,7 +569,7 @@ export interface PickerOptions {
 
 export interface PickerColumn {
   name?: string;
-  selected?: PickerColumnOption;
+  selectedIndex?: number;
   prefix?: string;
   suffix?: string;
   options: PickerColumnOption[];
@@ -578,8 +581,8 @@ export interface PickerColumn {
 }
 
 export interface PickerColumnOption {
-  value?: any;
   text?: any;
+  value?: any;
 }
 
 

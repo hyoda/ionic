@@ -6,42 +6,39 @@
 
   <ion-item>
     <ion-label>YYYY</ion-label>
-    <ion-datetime displayFormat="YYYY" min="1994" max="2004" [(ngModel)]="year"></ion-datetime>
+    <ion-datetime displayFormat="YYYY" min="1981" max="2002" [(ngModel)]="wwwInvented"></ion-datetime>
   </ion-item>
 
   <ion-item>
-    <ion-label>M|D|YY</ion-label>
-    <ion-datetime displayFormat="M|D|YY" min="1994" max="2004" [(ngModel)]="monthDayYear"></ion-datetime>
+    <ion-label>MMMM YYYY</ion-label>
+    <ion-datetime displayFormat="MMMM YYYY" min="1989" max="2002" [(ngModel)]="netscapeRelease"></ion-datetime>
   </ion-item>
 
   <ion-item>
-    <ion-label>HH|mm</ion-label>
-    <ion-datetime displayFormat="HH|mm" [(ngModel)]="time"></ion-datetime>
+    <ion-label>MMM DD, YYYY</ion-label>
+    <ion-datetime displayFormat="MMM DD, YYYY" min="1994" max="2012" [(ngModel)]="firefoxRelease"></ion-datetime>
   </ion-item>
 
   <ion-item>
-    <ion-label>h|mm|a</ion-label>
-    <ion-datetime displayFormat="h|mm|a" [(ngModel)]="time"></ion-datetime>
+    <ion-label>HH:mm</ion-label>
+    <ion-datetime displayFormat="HH:mm" [(ngModel)]="time"></ion-datetime>
   </ion-item>
 
   <ion-item>
-    <ion-label>MMMM|YYYY</ion-label>
-    <ion-datetime displayFormat="MMMM|YYYY" min="1994" max="2004" [(ngModel)]="monthYear"></ion-datetime>
+    <ion-label>h:mm a</ion-label>
+    <ion-datetime displayFormat="h:mm a" [(ngModel)]="time"></ion-datetime>
   </ion-item>
 
   <ion-item>
-    <ion-label>ddd MMM DD|YYYY</ion-label>
-    <ion-datetime displayFormat="ddd MMM DD|YYYY" min="1994" max="2004" [(ngModel)]="dayNameMonthDayYear"></ion-datetime>
+    <ion-label>MMM D, YYYY h:mm A</ion-label>
+    <ion-datetime displayFormat="MMM D, YYYY h:mm A" min="1989" max="2002" [(ngModel)]="netscapeRelease"></ion-datetime>
   </ion-item>
-
-<!--
-  <ion-item>
-    <ion-label>ddd MMM DD|h|MM|a</ion-label>
-    <ion-datetime displayFormat="ddd MMM D|h|MM|a" min="1994" max="2004" [(ngModel)]="dayMonthDay12Hour"></ion-datetime>
-  </ion-item>-->
 
   <p aria-hidden="true" padding>
-    <code>year: {{year}}</code>
+    <code>wwwInvented: {{wwwInvented | json}}</code><br>
+    <code>netscapeRelease: {{netscapeRelease | json}}</code><br>
+    <code>firefoxRelease: {{firefoxRelease | json}}</code><br>
+    <code>time: {{time | json}}</code><br>
   </p>
 
 </ion-content>

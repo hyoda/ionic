@@ -4,7 +4,8 @@ import {NG_VALUE_ACCESSOR} from 'angular2/common';
 import {Picker, PickerColumn} from '../picker/picker';
 import {Form} from '../../util/form';
 import {Item} from '../item/item';
-import {merge, isBlank, isString, isFunction, isDate, isTrueProperty, parseDate, DateParse} from '../../util/util';
+import {merge, isBlank, isPresent, isTrueProperty} from '../../util/util';
+import {dateValueRange, renderDateTime, renderTextFormat, convertFormatToDateKey, parseTemplate, parseDate, DateTimeData, convertDateTimeDataToDate} from '../../util/datetime-util';
 import {NavController} from '../nav/nav-controller';
 
 const DATETIME_VALUE_ACCESSOR = new Provider(
@@ -66,10 +67,9 @@ export class DateTime {
   private _text: string = '';
   private _fn: Function;
   private _isOpen: boolean = false;
-  private _valueType: string;
-  private _min: DateParse;
-  private _max: DateParse;
-  private _value: DateParse;
+  private _min: DateTimeData;
+  private _max: DateTimeData;
+  private _value: DateTimeData;
 
   /**
    * @private
@@ -93,13 +93,19 @@ export class DateTime {
   @Input() max: string;
 
   /**
-   * @input {string} The display format of the date and time input selections.
+   * @input {string} The display format of the date and time as text that shows
+   * within the item. Defaults to `MMM D, YYYY`.
+   */
+  @Input() displayFormat: string;
+
+  /**
+   * @input {string} The format of the date and time picker columns the user selects.
    * A datetime input can have one or many datetime parts, each getting their
    * own column which allow individual selection of that datetime part. Each
    * column follows the string parse format, and is separated by a `|` character.
    * Defaults to `MMM|D|YYYY`.
    */
-  @Input() displayFormat: string;
+  @Input() pickerFormat: string;
 
   /**
    * @input {string} The text to display on the cancel button. Default: `Cancel`.
@@ -144,14 +150,6 @@ export class DateTime {
     }
   }
 
-  /**
-   * @private
-   */
-  ngAfterViewInit() {
-
-    //this._updOpts();
-  }
-
   @HostListener('click', ['$event'])
   private _click(ev) {
     if (ev.detail === 0) {
@@ -160,17 +158,20 @@ export class DateTime {
     }
     ev.preventDefault();
     ev.stopPropagation();
-    this._open();
+    this.open();
   }
 
   @HostListener('keyup.space', ['$event'])
   private _keyup(ev) {
     if (!this._isOpen) {
-      this._open();
+      this.open();
     }
   }
 
-  private _open() {
+  /**
+   * @private
+   */
+  open() {
     if (this._disabled) {
       return;
     }
@@ -192,13 +193,14 @@ export class DateTime {
       {
         text: this.doneText,
         handler: (data) => {
-          this.onChange(null);
-          this.change.emit(null);
+          console.log('datetime, done', data);
+          this.onChange(data);
+          this.change.emit(data);
         }
       }
     ];
 
-    this.parseDisplay(picker);
+    this.generateColumns(picker);
 
     this._nav.present(picker, pickerOptions);
 
@@ -208,23 +210,102 @@ export class DateTime {
     });
   }
 
-  setValue(val: any) {
-    if (isBlank(val) || val === '') {
+  /**
+   * @private
+   */
+  generateColumns(picker: Picker) {
+    // if a picker format wasn't provided, then fallback
+    // to use the display format
+    let template = this.pickerFormat || this.displayFormat;
+
+    if (isPresent(template)) {
+      // make sure we've got up to date sizing information
+      this.calcMinMax();
+
+      // parse apart the given template into an array of "formats"
+      parseTemplate(template).forEach(format => {
+        // loop through each format in the template
+        // create a new picker column to build up with data
+        let column: PickerColumn = {
+          name: convertFormatToDateKey(format),
+          options: dateValueRange(format, this._min, this._max).map(val => {
+            return {
+              value: val,
+              text: renderTextFormat(format, val),
+            };
+          }),
+          columnWidth: getColumnWidth(format)
+        };
+
+        if (column.options.length) {
+          // cool, we've loaded up the columns with options
+          if (this._value && this._value.type) {
+            // we've got a valid date value already
+            // preselect the option for this column
+            var selected = column.options.find(opt => {
+              return opt.value === this._value[convertFormatToDateKey(format)];
+            });
+            if (selected) {
+              // set the select index for this column's options
+              column.selectedIndex = column.options.indexOf(selected);
+            }
+          }
+          // add our newly created column to the picker
+          picker.addColumn(column);
+        }
+      });
+    }
+  }
+
+  /**
+   * @private
+   */
+  setValue(data: any) {
+    if (isBlank(data) || data === '') {
+      // no data
       this._value = null;
 
-    } else {
-      this._value = parseDate(val);
+    } else if (this._value && this._value.type && isPresent(data.year)) {
+      // there is already a valid parsed DateTimeData value
+      // and the value update has new DateTimeData values
+      // update the existing DateTimeData data with the new values
+      for (var k in data) {
+        if (isPresent(data[k].value)) {
+          this._value[k] = data[k].value;
+        }
+      }
 
-      if (!this._value.isValid) {
-        printErrorMsg('input', val);
+    } else {
+      // new data, parse it and create the DateTimeData value
+      var parsedValue = parseDate(data);
+
+      if (parsedValue.type) {
+        // huzzah!
+        this._value = parsedValue;
+
+      } else {
+        // eww, invalid data
+        this._value = null;
+        console.warn(`Error parsing date: "${data}". Please provide a Date object, or a valid ISO 8601 datetime format, such as "1994-12-15T13:47:20Z"`);
       }
     }
   }
 
+  /**
+   * @private
+   */
+  updateText() {
+    // create the text of the formatted data
+    this._text = renderDateTime(this.displayFormat, this._value);
+  }
+
+  /**
+   * @private
+   */
   calcMinMax() {
-    var today = new Date();
-    var defaultMin = (today.getFullYear() - 100) + '-01-01T00:00:00Z';
-    var defaultMax = today.getFullYear() + '-12-31T23:59:59Z';
+    let today = new Date();
+    let defaultMin = (today.getFullYear() - 100) + '-01-01T00:00:00Z';
+    let defaultMax = today.getFullYear() + '-12-31T23:59:59Z';
 
     if (isBlank(this.min)) {
       this.min = defaultMin;
@@ -236,111 +317,6 @@ export class DateTime {
 
     this._min = parseDate(this.min);
     this._max = parseDate(this.max);
-  }
-
-  parseDisplay(picker: Picker) {
-    if (!isBlank(this.displayFormat)) {
-
-      this.calcMinMax();
-
-      this.displayFormat.split('|').forEach(columnFormat => {
-        columnFormat = columnFormat.trim();
-        if (columnFormat !== '') {
-          this.parseColumn(picker, columnFormat);
-        }
-      });
-    }
-  }
-
-  parseColumn(picker: Picker, columnFormat: string) {
-    var column: PickerColumn = {
-      options: []
-    };
-
-    columnFormat.match(FORMATTING_TOKENS).forEach(part => {
-      part = part.trim();
-      if (part !== '') {
-        this.parsePart(part, column);
-      }
-    });
-
-    if (column.options.length) {
-      picker.addColumn(column);
-    }
-  }
-
-
-  parsePart(part: string, column: PickerColumn) {
-    var opts = column.options;
-
-    if (part === 'YYYY' || part === 'YY') {
-      // year
-      var yr = this._max.year;
-      while (yr >= this._min.year) {
-        opts.push(part === 'YY' ? yr.toString().substr(2, 2) : yr);
-        yr--;
-      }
-
-    } else if (part === 'MMMM' || part === 'MMM') {
-      // month, full name
-      for (var i = 0; i < 12; i++) {
-        opts.push(part === 'MMM' ? MONTH_SHORT[i] : MONTH_FULL[i]);
-      }
-
-    } else if (part === 'MM' || part === 'M') {
-      // month, numeric
-      for (var i = 1; i <= 12; i++) {
-        opts.push(part === 'MM' ? ('0' + i).slice(-2) : i);
-      }
-
-    } else if (part === 'DD' || part === 'D') {
-      // date, numeric
-      for (var i = 1; i <= 31; i++) {
-        opts.push(part === 'DD' ? ('0' + i).slice(-2) : i);
-      }
-
-    } else if (part === 'HH' || part === 'H') {
-      // 24-hour
-      for (var i = 0; i < 24; i++) {
-        opts.push(part === 'HH' ? ('0' + i).slice(-2) : i);
-      }
-
-    } else if (part === 'hh' || part === 'h') {
-      // 12-hour
-      for (var i = 1; i <= 12; i++) {
-        opts.push(part === 'hh' ? ('0' + i).slice(-2) : i);
-      }
-
-    } else if (part === 'mm' || part === 'm') {
-      // minutes
-      for (var i = 0; i < 60; i++) {
-        opts.push(part === 'mm' ? ('0' + i).slice(-2) : i);
-      }
-
-    } else if (part === 'A') {
-      // AM/PM
-      opts.push('AM', 'PM');
-
-    } else if (part === 'a') {
-      // am/pm
-      opts.push('am', 'pm');
-
-    }
-
-  }
-
-  /**
-   * @private
-   */
-  get text() {
-    return '';
-  }
-
-  /**
-   * @private
-   */
-  private _updOpts() {
-
   }
 
   /**
@@ -362,7 +338,14 @@ export class DateTime {
   writeValue(val: any) {
     console.debug('datetime, writeValue', val);
     this.setValue(val);
-    //this._updOpts();
+    this.updateText();
+  }
+
+  /**
+   * @private
+   */
+  ngAfterContentInit() {
+    this.updateText();
   }
 
   /**
@@ -372,9 +355,12 @@ export class DateTime {
     this._fn = fn;
     this.onChange = (val: any) => {
       console.debug('datetime, onChange', val);
-      fn(val);
       this.setValue(val);
-      this._updOpts();
+      this.updateText();
+
+      // convert DateTimeData value to Date object
+      fn(convertDateTimeDataToDate(this._value));
+
       this.onTouched();
     };
   }
@@ -391,7 +377,7 @@ export class DateTime {
     // onChange used when there is not an ngControl
     console.debug('datetime, onChange w/out ngControl', val);
     this.setValue(val);
-    this._updOpts();
+    this.updateText();
     this.onTouched();
   }
 
@@ -408,59 +394,12 @@ export class DateTime {
   }
 }
 
+function getColumnWidth(format: string): string {
+  if (format === 'YYYY') {
+    return '105px';
+  }
 
-const FORMATTING_TOKENS = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
-
-function printErrorMsg(dateLabel: string, dateObj: any) {
-  console.error(`Error parsing ${dateLabel} date: "${dateObj}". Please provide a valid Date object, or an ISO 8601 datetime format, such as "1994-12-15T13:47:20Z"`);
+  if (format.length < 3) {
+    return '75px';
+  }
 }
-
-
-const DAY_FULL = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday"
-];
-
-const DAY_SHORT = [
-  "Sun",
-  "Mon",
-  "Tue",
-  "Wed",
-  "Thu",
-  "Fri",
-  "Sat"
-];
-
-const MONTH_FULL = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December"
-];
-const MONTH_SHORT = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec"
-];

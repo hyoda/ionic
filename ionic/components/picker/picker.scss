@@ -99,8 +99,12 @@ ion-picker-cmp {
   flex: 1;
 
   width: 100%;
+}
 
-  text-align: center;
+.picker-opt .button-inner {
+  display: block;
+
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }

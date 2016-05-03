@@ -15,9 +15,9 @@ $picker-ios-button-height:                     $picker-ios-toolbar-height !defau
 $picker-ios-button-text-color:                 $link-ios-color !default;
 $picker-ios-button-background-color:           transparent !default;
 
-$picker-ios-column-padding:                    0 12px !default;
+$picker-ios-column-padding:                    0 8px !default;
 
-$picker-ios-option-padding:                    0 10px !default;
+$picker-ios-option-padding:                    0 !default;
 $picker-ios-option-text-color:                 $list-ios-text-color !default;
 $picker-ios-option-font-size:                  22px !default;
 $picker-ios-option-height:                     42px !default;
@@ -100,8 +100,6 @@ $picker-highlight-opacity:                     .8 !default;
 .picker-opt {
   margin: 0;
   padding: $picker-ios-option-padding;
-
-  width: calc(100% - 24px);
 
   font-size: $picker-ios-option-font-size;
   line-height: $picker-ios-option-height;

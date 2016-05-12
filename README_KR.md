@@ -1,1 +1,1 @@
-[![Circle CI](https://circleci.com/gh/drifityco/ionic.svg?style=svg)](https://circleci.com/gh/driftyco/iconic)
+[![Circle CI](https://circleci.com/gh/drifityco/ionic.svg?style=svg)](https://circleci.com/gh/driftyco/ionic)
